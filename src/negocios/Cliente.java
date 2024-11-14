@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import dados.Carrinho;
 import dados.GerirProdutoPratileira;
+import negocios.exceptions.NaoExistenteException;
 import negocios.interfaces.ServicoPagamento;
 
 public class Cliente {
@@ -66,15 +67,23 @@ public class Cliente {
 	
 	public void AdicionarProduto(Integer id, Integer quantidade){
 		Produto produtoEncontrado = gerirPrateleira.PegarProduto(id);
-		produtoEncontrado.setQuantidade(produtoEncontrado.getQuantidade() - quantidade);
-		Produto produtoPendente = new Produto(produtoEncontrado.getNome(),produtoEncontrado.getPreco(),quantidade);
-		produtoPendente.setId(produtoEncontrado.getId());
-		carrinho.getProdutos().add(produtoPendente);
+		if(produtoEncontrado != null) {
+			produtoEncontrado.setQuantidade(produtoEncontrado.getQuantidade() - quantidade);
+			Produto produtoPendente = new Produto(produtoEncontrado.getNome(),produtoEncontrado.getPreco(),quantidade);
+			produtoPendente.setId(produtoEncontrado.getId());
+			carrinho.getProdutos().add(produtoPendente);
+		}else {
+			throw new NaoExistenteException("Produto não encontrado!");
+		}
 	}
 	
 	public void RemoverProduto(Integer id) {
 		Produto produtoEncontrado = carrinho.getProdutos().stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
-		carrinho.getProdutos().remove(produtoEncontrado);
+		if(produtoEncontrado != null) {
+			carrinho.getProdutos().remove(produtoEncontrado);
+		}else {
+			throw new NaoExistenteException("Produto não encontrado!");
+		}
 	}
 	
 	

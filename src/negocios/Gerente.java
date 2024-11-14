@@ -2,61 +2,64 @@ package negocios;
 
 import dados.Estoque;
 import dados.GerirEstoque;
+import dados.GerirFuncionarios;
 import dados.GerirPedidos;
 
 public class Gerente extends Funcionario {
-	private GerirEstoque rep;
-	private GerirPedidos service;
+	private GerirEstoque repProdutos;
+	private GerirPedidos repPedidos;
+	private GerirFuncionarios repFuncionarios;
 	
 	public Gerente() {}
 	
-	public Gerente(GerirEstoque rep,String nome, Integer senha,GerirPedidos service) {
+	public Gerente(GerirEstoque repProdutos,String nome, Integer senha,GerirPedidos repPedidos,GerirFuncionarios repFuncionarios) {
 		super(nome,senha);
-		this.rep = rep;
-		this.service = service;
+		this.repProdutos = repProdutos;
+		this.repPedidos = repPedidos;
+		this.repFuncionarios = repFuncionarios;
 	}
 	
 	public void AdicionarProduto(Produto produto) {
-		rep.AdicionarProduto(produto);
+		repProdutos.Adicionar(produto);
 	}
 	
 	public void RemoverProduto(Integer id) {
-		rep.RemoverProduto(id);
+		repProdutos.Remover(id);
 	}
 	
 	public void ListarProduto() {
-		rep.ListarProdutos();
+		repProdutos.Listar();
 	}
 	
 	public void AtualizarProduto(Integer id,Produto produto) {
-		rep.AtualizarProduto(id,produto);
+		repProdutos.Atualizar(id,produto);
 	}
 	
 	public Funcionario getFuncionario(Integer id) {
-		return rep.buscarFuncionario(id);
+		return repFuncionarios.buscarFuncionario(id);
 	}
 	
 	public void AdicionarFuncionario(Funcionario Funcionario) {
-		rep.AdicionarFuncionario(Funcionario);
+		repFuncionarios.Adicionar(Funcionario);
 	}
 	
 	public void RemoverFuncionario(Integer id) {
-		rep.RemoverFuncionario(id);
+		repFuncionarios.Remover(id);
 	}
 	
 	public void ListarFuncionario() {
-		rep.ListarFuncionarios();
+		repFuncionarios.Listar();
 	}
 	
 	public void AtualizarFuncionario(Integer id,Funcionario Funcionario) {
-		rep.AtualizarFuncionario(id,Funcionario);
+		repFuncionarios.Atualizar(id,Funcionario);
 	}
 	
 	public Estoque getEstoque() {
-		return rep.getEstoque();
+		return repProdutos.getEstoque();
 	}
 	
 	public GerirPedidos getGerirPedidos() {
-		return service;
+		return repPedidos;
 	}
 }

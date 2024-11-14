@@ -1,10 +1,10 @@
 package InterfaceUI;
 
-import java.util.Scanner;
-
 import dados.Estoque;
 import dados.GerirEstoque;
+import dados.GerirFuncionarios;
 import dados.GerirPedidos;
+import dados.RegistroFuncionarios;
 import dados.RegistroPedidos;
 import negocios.Gerente;
 import negocios.Produto;
@@ -18,16 +18,16 @@ public class InitialSetup {
 		Produto prod4 = new Produto("Macarrão",3.5,17);
 		
 		Estoque estoque = new Estoque();
-		
+		RegistroFuncionarios registroFuncionarios = new RegistroFuncionarios();
 		GerirEstoque gerirEstoque = new GerirEstoque(estoque);
-		
+		GerirFuncionarios gerirFuncionarios = new GerirFuncionarios(registroFuncionarios);
+
 
 		RegistroPedidos registroPedidos = new RegistroPedidos();
 		
 		GerirPedidos gerirPedidos = new GerirPedidos(registroPedidos);
 		
-		
-		Gerente gerente = new Gerente(gerirEstoque,"Gerente 1", 12345,gerirPedidos);
+		Gerente gerente = new Gerente(gerirEstoque,"Gerente 1", 12345,gerirPedidos,gerirFuncionarios);
 		
 		
 		gerente.AdicionarProduto(prod1);
@@ -35,7 +35,7 @@ public class InitialSetup {
 		gerente.AdicionarProduto(prod3);
 		gerente.AdicionarProduto(prod4);
 		
-		gerirEstoque.AdicionarFuncionario(gerente);
+		gerirFuncionarios.Adicionar(gerente);
 		Vendedor vendedor = new Vendedor(gerirPedidos,"Vendedor 1",12345);
 		
 		gerente.AdicionarFuncionario(vendedor);

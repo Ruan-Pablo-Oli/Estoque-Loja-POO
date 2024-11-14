@@ -1,33 +1,36 @@
 package dados;
 
+import dados.interfaces.IRepository;
 import negocios.Pedido;
+import negocios.exceptions.PedidoNaoExistenteException;
 
-public class GerirPedidos {
+public class GerirPedidos implements IRepository<Pedido> {
 	private RegistroPedidos registroPedidos;
 	
 	public GerirPedidos(RegistroPedidos registroPedidos) {
 		this.registroPedidos = registroPedidos;
 	}
-	public void AdicionarPedidoAberto(Pedido Pedido) {
+	public void Adicionar(Pedido Pedido) {
+
 		if(Pedido != null && buscarPedidoAberto(Pedido.getId()) == null) {
 			registroPedidos.getPedidosAbertos().add(Pedido);
 		}
 	}
 
-	public void RemoverPedidoAberto(Integer id) {
+	public void Remover(Integer id) {
 		Pedido Pedido = buscarPedidoAberto(id);
 		if(Pedido != null) {
 			registroPedidos.getPedidosAbertos().remove(Pedido);
 		}
 	}
 	
-	public void ListarPedidosAbertos() {
+	public void Listar() {
 		for(Pedido pedido : registroPedidos.getPedidosAbertos()) {
 			System.out.println(pedido);
 		}
 	}
 	
-	public void AtualizarPedidoAberto(Integer id, Pedido PedidoAtualizado) {
+	public void Atualizar(Integer id, Pedido PedidoAtualizado) {
 		Pedido PedidoDesatualizado = buscarPedidoAberto(id);
 		
 		PedidoDesatualizado.setServicoPagamento(PedidoAtualizado.getServicoPagamento() != null ? PedidoAtualizado.getServicoPagamento() : PedidoDesatualizado.getServicoPagamento());
@@ -43,6 +46,8 @@ public class GerirPedidos {
 	public void AdicionarPedidoFechado(Pedido Pedido) {
 		if(Pedido != null && buscarPedidoFechado(Pedido.getId()) == null) {
 			registroPedidos.getPedidosFechados().add(Pedido);
+		}else {
+			throw new PedidoNaoExistenteException("Não foi encontrado esse pedido!");
 		}
 	}
 	

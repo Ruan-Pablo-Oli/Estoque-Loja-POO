@@ -9,6 +9,11 @@ import negocios.Funcionario;
 import negocios.Gerente;
 import negocios.Produto;
 import negocios.Vendedor;
+import negocios.exceptions.CarrinhoVazioException;
+import negocios.exceptions.ClienteNaoEncontradoException;
+import negocios.exceptions.ExistenteException;
+import negocios.exceptions.NaoExistenteException;
+import negocios.exceptions.PedidoNaoExistenteException;
 
 public class UI {
 	
@@ -35,6 +40,7 @@ public class UI {
 		System.out.println("------------1:Criar pedido----------------------------");
 		System.out.println("------------2:Cancelar pedido----------------------------");
 		System.out.println("------------3:Realizar venda----------------------------");
+		System.out.println("------------4:Sair----------------------------");
 
 	}
 	
@@ -50,6 +56,7 @@ public class UI {
 	}
 
 	public static void main(String[] args) {
+
 
 		Scanner sc  = new Scanner(System.in);
 		Boolean sair = false;
@@ -82,15 +89,24 @@ public class UI {
 								Integer prodId = sc.nextInt();
 								System.out.println("Digite a quantidade de produtos : ");
 								Integer quantidade = sc.nextInt();
-								cliente.AdicionarProduto(prodId, quantidade);
-								System.out.println("Produto adicionado!");
+								try {
+									cliente.AdicionarProduto(prodId, quantidade);
+									System.out.println("Produto adicionado!");
+
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 2: {
 								System.out.println(cliente.getCarrinho());
 								System.out.println("Digite o id do produto: ");
 								Integer prodId = sc.nextInt();
-								cliente.RemoverProduto(prodId);
+								try {
+									cliente.RemoverProduto(prodId);
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 3: {
@@ -122,13 +138,22 @@ public class UI {
 								System.out.println("Digite a quantidade de produtos : ");
 								Integer quantidade = sc.nextInt();
 								Produto novoProduto = new Produto(nome,preco,quantidade);
-								gerente.AdicionarProduto(novoProduto);
+								try {
+									gerente.AdicionarProduto(novoProduto);
+
+								}catch(ExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 2:{
 								System.out.println("Digite o id do produto");
 								Integer prodId = sc.nextInt();
-								gerente.RemoverProduto(prodId);
+								try {
+									gerente.RemoverProduto(prodId);
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 3:{
@@ -137,14 +162,23 @@ public class UI {
 								System.out.println("Digite a senha do funcionário: ");
 								Integer senha = sc.nextInt();
 								Funcionario novoFuncionario = new Vendedor(gerente.getGerirPedidos(),nome,senha);
-								gerente.AdicionarFuncionario(novoFuncionario);
+								try {
+									gerente.AdicionarFuncionario(novoFuncionario);
+
+								}catch(ExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 4:{
 								InitialSetup.listarFuncionario(gerente);
 								System.out.println("Digite o id do funcionário: ");
 								Integer funId = sc.nextInt();
+								try {
 								gerente.RemoverFuncionario(funId);
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 5:{
@@ -161,7 +195,12 @@ public class UI {
 								System.out.println("Digite o código do produto que vai ser atualizado: ");
 								Integer codProd = sc.nextInt();
 								
-								gerente.AtualizarProduto(codProd, produtoAtualizado);
+								try {
+									gerente.AtualizarProduto(codProd, produtoAtualizado);
+
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							
@@ -177,7 +216,12 @@ public class UI {
 								System.out.println("Digite o código do funcionário que vai ser atualizado: ");
 								Integer codFun = sc.nextInt();
 								
-								gerente.AtualizarFuncionario(codFun, funcionarioAtualizado);
+								try {
+									gerente.AtualizarFuncionario(codFun, funcionarioAtualizado);
+
+								}catch(NaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
 								break;
 							}
 							case 7:{
@@ -197,9 +241,66 @@ public class UI {
 					}
 					break;
 				}
+				case 3:{
+					Boolean sairMenuVendedor = false;
+					InitialSetup.listarFuncionario(gerente);
+					System.out.println("Digite o id do vendedor");
+					Integer codVendedor = sc.nextInt();
+					Vendedor vendedor = (Vendedor) gerente.getFuncionario(codVendedor);
+					while(!sairMenuVendedor) {
+						menuVendedor();
+						opcaoInternaVendedor = sc.nextInt();
+
+						switch(opcaoInternaVendedor) {
+							case 1:{
+								try {
+									vendedor.criarPedido(cliente);
+								}catch(CarrinhoVazioException e) {
+									System.out.println(e.getMessage());
+								}catch(ClienteNaoEncontradoException e) {
+									System.out.println(e.getMessage());
+								}
+								break;
+							}
+							case 2:{
+								System.out.println("Digite o id do pedido: ");
+								Integer codPedido = sc.nextInt();
+								try {
+									vendedor.CancelarPedido(codPedido, gerente);
+								}catch(PedidoNaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
+								break;
+							}
+							case 3:{
+								System.out.println("Digite o id do pedido: ");
+								Integer codPedido = sc.nextInt();
+								try {
+									vendedor.RealizarVenda(codPedido, cliente);
+								}catch(PedidoNaoExistenteException e) {
+									System.out.println(e.getMessage());
+								}
+								break;
+							}
+							case 4:{
+								sairMenuVendedor = true;
+								
+								break;
+							}
+							default:{
+								System.out.println("Digite um opção válida!");
+							}
+						}
+					}
+					break;
+				}
 				
-				case 5:{
+				case 4:{
 					sair = true;
+					break;
+				}
+				default:{
+					System.out.println("Digite um opção válida!");
 					break;
 				}
 			
